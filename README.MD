@@ -142,3 +142,5 @@ Este projeto é de uso educacional, desenvolvido exclusivamente para fins acadê
 **Desenvolvido com 💙 pelo Grupo 8 – Projeto Integrador II (2024)**
 
 [🔝 Voltar ao topo](#ludoloca-)
+
+estou testando os commits
