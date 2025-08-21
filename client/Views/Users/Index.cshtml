@@ -1,0 +1,59 @@
+﻿@model List<Client.Models.UserViewModel>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container">
+    <h2 class="mb-4">User Management</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Email</th>
+                    <th>User Name</th>
+                    <th>Admin</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Email</td>
+                        <td>@user.UserName</td>
+                        <td>
+                            <form asp-action="SetAdmin" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <input type="hidden" name="isAdmin" value="@(user.IsAdmin ? "false" : "true")" />
+                                <button type="submit" class="btn btn-sm @(user.IsAdmin ? "btn-success" : "btn-outline-secondary")" title="Toggle admin">
+                                    @(user.IsAdmin ? "Admin" : "Make Admin")
+                                </button>
+                            </form>
+                        </td>
+                        <td class="text-end">
+                            <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Delete this user?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger" title="Delete user">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Bootstrap Icons for the trash icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+}
