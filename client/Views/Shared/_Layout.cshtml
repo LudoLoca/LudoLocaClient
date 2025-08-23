@@ -1,7 +1,6 @@
 ﻿@*
-  _Layout.cshtml with Bootstrap 5 + theme toggle
-  Works with API cookie flow (checks /api/account/me) and will also render
-  sensible defaults if you later enable MVC cookie auth (User.Identity).
+  Layout principal do cliente MVC.
+  Inclui Bootstrap 5, suporte a dark mode, integração com autenticação da API e controles de navegação dinâmicos.
 *@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
@@ -19,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - Client</title>
 
-    <!-- Apply initial theme ASAP -->
+    <!-- Script para aplicar o tema (claro/escuro) antes do carregamento -->
     <script>
         (function () {
             var storageKey = 'theme';
@@ -50,25 +49,28 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Health" asp-action="Index">Health</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Users" asp-action="Index">Users</a>
+                        </li>
                     </ul>
 
-                    <!-- Right-side controls -->
+                    <!-- Controles à direita: tema, autenticação e navegação -->
                     <div class="d-flex align-items-center gap-2">
-                        <!-- Theme toggle -->
+                        <!-- Botão de alternância de tema -->
                         <button id="themeToggle" type="button" class="btn btn-outline-secondary btn-sm" aria-label="Toggle color mode" aria-live="polite">
                             Auto
                         </button>
 
-                        <!-- Logout (server render: show if MVC cookie exists; JS will also toggle after /me) -->
-                        <form id="mvcLogoutForm" asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0 @(isMvcAuthed ? "" : "d-none")">
+                        <!-- Logout MVC (visível apenas se autenticado pelo MVC) -->
+                        <form id="mvcLogoutForm" asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
                         </form>
 
-                        <!-- API-only Logout button (hidden by default; JS shows if /me says authenticated) -->
+                        <!-- Logout API (visível apenas se autenticado pela API) -->
                         <button id="apiLogoutBtn" class="btn btn-outline-danger btn-sm d-none" type="button">Logout</button>
 
-                        <!-- Login/Register links (server default: visible if NOT MVC authed; JS may hide) -->
+                        <!-- Links de Login/Registro (visíveis apenas se não autenticado) -->
                         <a id="loginLink" class="btn btn-outline-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
                            asp-controller="Account" asp-action="Login">Login</a>
                         <a id="registerLink" class="btn btn-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
@@ -94,7 +96,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        /* Theme toggle */
+        // Alternância de tema claro/escuro
         (function () {
             var storageKey='theme', btn=document.getElementById('themeToggle');
             function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
@@ -117,43 +119,50 @@
                     else if(typeof mq.addListener==='function') mq.addListener(handle); }
         })();
 
-        /* Auth UI tied to API cookie (credentialed cross-site) */
-        (function () {
-            const apiBase = '@apiBase';              // stays configurable; fallback kept
-            const apiLogoutBtn = document.getElementById('apiLogoutBtn');
-            const mvcLogoutForm = document.getElementById('mvcLogoutForm');
-            const loginLink = document.getElementById('loginLink');
-            const registerLink = document.getElementById('registerLink');
+        // Controle de autenticação e exibição dinâmica dos botões de navegação
+        // (function () {
+        //     const apiBase = '@apiBase';
+        //     const apiLogoutBtn = document.getElementById('apiLogoutBtn');
+        //     const mvcLogoutForm = document.getElementById('mvcLogoutForm');
+        //     const loginLink = document.getElementById('loginLink');
+        //     const registerLink = document.getElementById('registerLink');
 
-            // Show/hide buttons based on API cookie state
-            async function refreshAuthUi() {
-                try {
-                    const resp = await fetch(apiBase + '/api/account/me', { credentials: 'include' });
-                    const body = await resp.json().catch(() => ({}));
-                    const apiAuthed = !!(body && body.authenticated === true);
+        //     // Atualiza a interface de acordo com o estado de autenticação da API
+        //     async function refreshAuthUi() {
+        //         try {
+        //             const resp = await fetch(apiBase + 'api/account/me', { credentials: 'include' });
+        //             const body = await resp.json().catch(() => ({}));
+        //             const apiAuthed = !!(body && body.authenticated === true);
 
-                    // If API says authed, show API logout, hide login/register.
-                    if (apiAuthed) {
-                        apiLogoutBtn?.classList.remove('d-none');
-                        loginLink?.classList.add('d-none');
-                        registerLink?.classList.add('d-none');
-                    } else {
-                        apiLogoutBtn?.classList.add('d-none');
-                        // Only show login/register if MVC isn't already authed (server-rendered state reflected by classes).
-                        // If you rely solely on API cookie (no MVC cookie), these become visible here:
-                        loginLink?.classList.remove('d-none');
-                        registerLink?.classList.remove('d-none');
-                    }
-                } catch {
-                    // On error, keep current server-rendered state.
-                }
-            }
+        //             // Exibe o link "Users" apenas para administradores autenticados
+        //             const usersNavItem = document.getElementById('usersNavItem');
+        //             if (usersNavItem) {
+        //                 usersNavItem.classList.add('d-none');
+        //                 if (apiAuthed && Array.isArray(body.roles) && body.roles.includes('Admin')) {
+        //                     usersNavItem.classList.remove('d-none');
+        //                 }
+        //             }
 
+        //             // Exibe botões de logout e oculta login/registro se autenticado
+        //             if (apiAuthed) {
+        //                 apiLogoutBtn?.classList.remove('d-none');
+        //                 loginLink?.classList.add('d-none');
+        //                 registerLink?.classList.add('d-none');
+        //             } else {
+        //                 apiLogoutBtn?.classList.add('d-none');
+        //                 loginLink?.classList.remove('d-none');
+        //                 registerLink?.classList.remove('d-none');
+        //             }
+        //         } catch {
+        //             // Em caso de erro, mantém o estado renderizado pelo servidor
+        //         }
+        //     }
+
+            // Logout via API
             apiLogoutBtn?.addEventListener('click', async () => {
                 try {
-                    await fetch(apiBase + '/api/account/logout', { method: 'POST', credentials: 'include' });
-                } catch { /* ignore */ }
-                // After API logout, bounce home
+                    await fetch(apiBase + 'api/account/logout', { method: 'POST', credentials: 'include' });
+                } catch { /* ignora erro */ }
                 window.location.href = '/';
             });
 

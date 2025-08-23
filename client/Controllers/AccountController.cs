@@ -7,15 +7,15 @@ using Client.Models;
 
 namespace Client.Controllers
 {
-    [Route("[controller]")] // ensures /Account/...
+    [Route("[controller]")] // Garante rotas do tipo /Account/...
     public class AccountController : Controller
     {
-        private const string AuthScheme = "AppCookie"; // must match Program.cs
+        private const string AuthScheme = "AppCookie"; // Deve coincidir com o Program.cs
         private readonly IHttpClientFactory _httpFactory;
 
         public AccountController(IHttpClientFactory httpFactory) => _httpFactory = httpFactory;
 
-        // ===== REGISTER =====
+        // ===== REGISTRO DE USUÁRIO =====
         [HttpGet("Register")]
         [AllowAnonymous]
         public IActionResult Register() => View(new RegisterViewModel());
@@ -25,6 +25,7 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            // Validação básica do formulário
             if (!ModelState.IsValid) return View(model);
             if (model.Password != model.ConfirmPassword)
             {
@@ -36,6 +37,7 @@ namespace Client.Controllers
 
             try
             {
+                // Envia requisição para registrar usuário na API
                 var resp = await client.PostAsJsonAsync("api/account/register", new
                 {
                     Email = model.Email,
@@ -48,6 +50,7 @@ namespace Client.Controllers
                     return RedirectToAction("Login");
                 }
 
+                // Exibe erro retornado pela API
                 var apiErr = await SafeReadText(resp);
                 ModelState.AddModelError("", $"Registration failed: {apiErr}");
                 return View(model);
@@ -59,7 +62,7 @@ namespace Client.Controllers
             }
         }
 
-        // ===== LOGIN =====
+        // ===== LOGIN DE USUÁRIO =====
         [HttpGet("Login")]
         [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
@@ -79,6 +82,7 @@ namespace Client.Controllers
 
             try
             {
+                // Envia requisição de login para a API
                 var resp = await client.PostAsJsonAsync("api/account/login", new
                 {
                     Email = model.Email,
@@ -92,16 +96,13 @@ namespace Client.Controllers
                     return View(model);
                 }
 
-                // Accept both API response styles:
-                // 1) { success, userId, email, roles }
-                // 2) { message: "Logged in." } (no fields)
+                // Lê resposta da API (usuário, papéis, etc.)
                 var result = await SafeRead<LoginResult>(resp);
-
                 var email = result?.email ?? model.Email;
                 var userId = result?.userId ?? email;
                 var roles = result?.roles ?? Array.Empty<string>();
 
-                // Create MVC cookie
+                // Cria cookie de autenticação para o MVC
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, userId),
@@ -129,11 +130,14 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            // Remove o cookie de autenticação do MVC
             await HttpContext.SignOutAsync(AuthScheme);
             return RedirectToAction("Index", "Home");
         }
 
         // ===== Helpers =====
+
+        // Redireciona para URL local ou para Home
         private IActionResult RedirectToLocal(string? returnUrl)
         {
             if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
@@ -141,18 +145,21 @@ namespace Client.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // Lê texto de resposta HTTP de forma segura
         private static async Task<string> SafeReadText(HttpResponseMessage resp)
         {
             try { return await resp.Content.ReadAsStringAsync(); }
             catch { return resp.ReasonPhrase ?? "Unknown error"; }
         }
 
+        // Lê objeto JSON de resposta HTTP de forma segura
         private static async Task<T?> SafeRead<T>(HttpResponseMessage resp) where T : class
         {
             try { return await resp.Content.ReadFromJsonAsync<T>(); }
             catch { return null; }
         }
 
+        // Modelo para resposta de login da API
         private sealed class LoginResult
         {
             public bool success { get; set; }
