@@ -1,0 +1,175 @@
+﻿@*
+  Layout principal do cliente MVC.
+  Inclui Bootstrap 5, suporte a dark mode, integração com autenticação da API e controles de navegação dinâmicos.
+*@
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration Configuration
+
+@{
+    var isMvcAuthed = (User?.Identity?.IsAuthenticated ?? false);
+    var apiBase = Configuration["ApiBaseUrl"] ?? "https://localhost:7140";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Client</title>
+
+    <!-- Script para aplicar o tema (claro/escuro) antes do carregamento -->
+    <script>
+        (function () {
+            var storageKey = 'theme';
+            function systemPrefersDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+            function resolveTheme(m){return (m==='light'||m==='dark')?m:(systemPrefersDark()?'dark':'light');}
+            var mode='auto';try{var s=localStorage.getItem(storageKey);if(s==='light'||s==='dark'||s==='auto')mode=s;}catch(_){}
+            var eff=resolveTheme(mode);var root=document.documentElement;
+            root.setAttribute('data-theme-mode',mode);root.setAttribute('data-bs-theme',eff);
+        })();
+    </script>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Client.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom" id="topNav">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Client</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div id="mainNav" class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Health" asp-action="Index">Health</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Users" asp-action="Index">Users</a>
+                        </li>
+                    </ul>
+
+                    <!-- Controles à direita: tema, autenticação e navegação -->
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Botão de alternância de tema -->
+                        <button id="themeToggle" type="button" class="btn btn-outline-secondary btn-sm" aria-label="Toggle color mode" aria-live="polite">
+                            Auto
+                        </button>
+
+                        <!-- Logout MVC (visível apenas se autenticado pelo MVC) -->
+                        <form id="mvcLogoutForm" asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+                        </form>
+
+                        <!-- Logout API (visível apenas se autenticado pela API) -->
+                        <button id="apiLogoutBtn" class="btn btn-outline-danger btn-sm d-none" type="button">Logout</button>
+
+                        <!-- Links de Login/Registro (visíveis apenas se não autenticado) -->
+                        <a id="loginLink" class="btn btn-outline-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
+                           asp-controller="Account" asp-action="Login">Login</a>
+                        <a id="registerLink" class="btn btn-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
+                           asp-controller="Account" asp-action="Register">Register</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="container py-4">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top py-3">
+        <div class="container text-body-secondary small">
+            &copy; @DateTime.UtcNow.Year - Client ·
+            <a asp-controller="Home" asp-action="Privacy" class="link-secondary">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Alternância de tema claro/escuro
+        (function () {
+            var storageKey='theme', btn=document.getElementById('themeToggle');
+            function sysDark(){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;}
+            function resolve(m){return (m==='light'||m==='dark')?m:(sysDark()?'dark':'light');}
+            function getS(){try{return localStorage.getItem(storageKey)}catch(_){return null}}
+            function setS(v){try{localStorage.setItem(storageKey,v)}catch(_){}}
+            function apply(m){
+                var eff=resolve(m),root=document.documentElement;
+                root.setAttribute('data-theme-mode',m);root.setAttribute('data-bs-theme',eff);
+                btn.textContent=(m==='light')?'Light':(m==='dark')?'Dark':'Auto';
+                btn.setAttribute('aria-pressed',m!=='auto'?'true':'false');
+                btn.title=(m==='light')?'Switch to Dark':(m==='dark')?'Switch to Auto':'Switch to Light';
+            }
+            var mode=getS(); if(mode!=='light'&&mode!=='dark'&&mode!=='auto')mode='auto'; apply(mode);
+            btn?.addEventListener('click',function(){var cur=document.documentElement.getAttribute('data-theme-mode')||'auto';
+                var next=(cur==='auto')?'light':(cur==='light')?'dark':'auto'; setS(next); apply(next);});
+            var mq=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
+            function handle(){ if((getS()||'auto')==='auto') apply('auto'); }
+            if(mq){ if(typeof mq.addEventListener==='function') mq.addEventListener('change',handle);
+                    else if(typeof mq.addListener==='function') mq.addListener(handle); }
+        })();
+
+        // Controle de autenticação e exibição dinâmica dos botões de navegação
+        // (function () {
+        //     const apiBase = '@apiBase';
+        //     const apiLogoutBtn = document.getElementById('apiLogoutBtn');
+        //     const mvcLogoutForm = document.getElementById('mvcLogoutForm');
+        //     const loginLink = document.getElementById('loginLink');
+        //     const registerLink = document.getElementById('registerLink');
+
+        //     // Atualiza a interface de acordo com o estado de autenticação da API
+        //     async function refreshAuthUi() {
+        //         try {
+        //             const resp = await fetch(apiBase + 'api/account/me', { credentials: 'include' });
+        //             const body = await resp.json().catch(() => ({}));
+        //             const apiAuthed = !!(body && body.authenticated === true);
+
+        //             // Exibe o link "Users" apenas para administradores autenticados
+        //             const usersNavItem = document.getElementById('usersNavItem');
+        //             if (usersNavItem) {
+        //                 usersNavItem.classList.add('d-none');
+        //                 if (apiAuthed && Array.isArray(body.roles) && body.roles.includes('Admin')) {
+        //                     usersNavItem.classList.remove('d-none');
+        //                 }
+        //             }
+
+        //             // Exibe botões de logout e oculta login/registro se autenticado
+        //             if (apiAuthed) {
+        //                 apiLogoutBtn?.classList.remove('d-none');
+        //                 loginLink?.classList.add('d-none');
+        //                 registerLink?.classList.add('d-none');
+        //             } else {
+        //                 apiLogoutBtn?.classList.add('d-none');
+        //                 loginLink?.classList.remove('d-none');
+        //                 registerLink?.classList.remove('d-none');
+        //             }
+        //         } catch {
+        //             // Em caso de erro, mantém o estado renderizado pelo servidor
+        //         }
+        //     }
+
+            // Logout via API
+            apiLogoutBtn?.addEventListener('click', async () => {
+                try {
+                    await fetch(apiBase + 'api/account/logout', { method: 'POST', credentials: 'include' });
+                } catch { /* ignora erro */ }
+                window.location.href = '/';
+            });
+
+            refreshAuthUi();
+        })();
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

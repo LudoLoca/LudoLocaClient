@@ -1,0 +1,6 @@
+﻿@{
+    ViewData["Title"] = "Health";
+}
+<h1>Health</h1>
+<p>API status: <strong>@ViewBag.ApiStatus</strong></p>
+<pre>@System.Text.Json.JsonSerializer.Serialize(ViewBag.ApiPayload)</pre>

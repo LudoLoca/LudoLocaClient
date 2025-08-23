@@ -1,0 +1,52 @@
+# Build results
+bin/
+obj/
+
+# Rider project files
+.idea/
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.slnlaunchuser
+
+# VS Code settings
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User secrets
+secrets.json
+
+# Local config (optional, if you store secrets here)
+appsettings.Development.json
+
+# Logs and temp
+*.log
+*.tmp
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+# Others
+*.zip
+*.7z
+*.tar
+*.gz
+*.rar
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Remove this line unless you have a file named 'nul'
+nul
+
+# User/machine-specific launch profiles
+Properties/launchSettings.json
