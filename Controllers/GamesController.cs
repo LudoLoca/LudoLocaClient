@@ -77,7 +77,7 @@ namespace Client.Controllers
                 return View(game);
 
             var client = _httpFactory.CreateClient("Api");
-            var response = await client.PutAsJsonAsync($"api/Game/{id}", game);
+            var response = await client.PatchAsJsonAsync($"api/Game/{id}", game);
 
             if (response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(Index));
