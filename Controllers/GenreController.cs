@@ -58,7 +58,7 @@ namespace Client.Controllers
             return View(genre);
         }
 
-        // POST: GenreController/Edit/5 // DEBUGAR!!!!!!!!!!!!!!!!!!
+        // POST: GenreController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, GenreViewModel genre)
