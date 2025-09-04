@@ -23,18 +23,6 @@ namespace Client.Controllers
             return View(genres ?? new List<GenreViewModel>());
         }
 
-        // GET: GenreController/Details/5
-        //public async Task<IActionResult> Details(Guid id)
-        //{
-        //    Console.WriteLine($"api/Genre/{id}");
-        //    var client = _httpFactory.CreateClient("Api");
-        //    var genre = await client.GetFromJsonAsync<GenreViewModel>($"api/Genre/{id}");
-        //    if (genre == null)
-        //        return NotFound();
-
-        //    return View(genre);
-        //}
-
         // GET: GenreController/Create
         public IActionResult Create()
         {
@@ -75,12 +63,11 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, GenreViewModel genre)
         {   
-            Console.WriteLine($"DEBUG - Editing Genre with ID: {id}");
             if (!ModelState.IsValid)
                 return View(genre);
 
             var client = _httpFactory.CreateClient("Api");
-            var response = await client.PutAsJsonAsync($"api/Genre/{id}", genre);
+            var response = await client.PatchAsJsonAsync($"api/Genre/{id}", genre);
 
             if (response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(Index));
