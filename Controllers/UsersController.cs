@@ -40,6 +40,7 @@ namespace Client.Controllers
 
             var client = _httpFactory.CreateClient("Api");
             var users = await client.GetFromJsonAsync<List<UserViewModel>>("api/users");
+
             return View(users ?? new List<UserViewModel>());
         }
 
@@ -48,6 +49,11 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var client = _httpFactory.CreateClient("Api");
             var resp = await client.DeleteAsync($"api/users/{id}");
             if (!resp.IsSuccessStatusCode)
@@ -60,6 +66,11 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetAdmin(Guid id, bool isAdmin)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var client = _httpFactory.CreateClient("Api");
             var content = new StringContent(JsonSerializer.Serialize(isAdmin), Encoding.UTF8, "application/json");
             var resp = await client.PostAsync($"api/users/{id}/set-admin", content);

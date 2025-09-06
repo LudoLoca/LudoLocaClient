@@ -29,29 +29,27 @@ namespace Client.Controllers
         // GET: GameController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            if (!User.IsInRole("Admin"))
-            {
-                var referer = Request.Headers["Referer"].ToString();
-                if (!string.IsNullOrEmpty(referer))
-                    return Redirect(referer);
-
-                return RedirectToAction("Index", "Home"); // fallback
-            }
-
             var client = _httpFactory.CreateClient("Api");
             var game = await client.GetFromJsonAsync<GameViewModel>($"api/Game/{id}");
             if (game == null)
                 return NotFound();
+
+            var isAdmin = User.IsInRole("Admin");
+            ViewBag.IsAdmin = isAdmin;
+
             return View(game);
         }
 
         // GET: GameController/Create
         public async Task<IActionResult> Create()
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var client = _httpFactory.CreateClient("Api");
-
             var allGenres = await client.GetFromJsonAsync<List<GenreViewModel>>("api/Genre");
-
             var vm = new GameViewModel
             {
                 AllGenres = allGenres ?? new List<GenreViewModel>()
@@ -65,6 +63,11 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GameViewModel game, List<Guid> SelectedGenres)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (!ModelState.IsValid)
                 return View(game);
 
@@ -98,25 +101,14 @@ namespace Client.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-        // GET: GamesController/Edit/5
-        //public async Task<IActionResult> Edit(Guid id)
-        //{
-        //    var client = _httpFactory.CreateClient("Api");
-        //    var game = await client.GetFromJsonAsync<GameViewModel>($"api/Game/{id}");
-        //    if (game == null)
-        //        return NotFound();
-
-        //    // carrega todos os gêneros
-        //    var allGenres = await client.GetFromJsonAsync<List<GenreViewModel>>("api/Genre");
-        //    game.AllGenres = allGenres ?? new();
-
-        //    return View(game);
-        //}
-
         // GET: GamesController/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var client = _httpFactory.CreateClient("Api");
 
             // busca o jogo
@@ -140,6 +132,11 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, GameViewModel game, List<Guid> SelectedGenres)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             if (!ModelState.IsValid)
                 return View(game);
 
@@ -175,6 +172,11 @@ namespace Client.Controllers
         // GET: GameController/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var client = _httpFactory.CreateClient("Api");
             var game = await client.GetFromJsonAsync<GameViewModel>($"api/Game/{id}");
             if (game == null)
@@ -187,6 +189,11 @@ namespace Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var client = _httpFactory.CreateClient("Api");
             var response = await client.DeleteAsync($"api/Game/{id}");
 
