@@ -5,7 +5,7 @@ using Client.Models;
 
 namespace Client.Controllers
 {
-    [Authorize(Roles = "Admin")] // Apenas administradores podem acessar este controller
+    //[Authorize(Roles = "Admin")] // Apenas administradores podem acessar este controller
     public class GamesController : Controller
     {
         private readonly IHttpClientFactory _httpFactory;
@@ -19,6 +19,9 @@ namespace Client.Controllers
         {
             var client = _httpFactory.CreateClient("Api");
             var games = await client.GetFromJsonAsync<List<GameViewModel>>("api/Game");
+            var isAdmin = User.IsInRole("Admin");
+
+            ViewBag.IsAdmin = isAdmin;
 
             return View(games ?? new List<GameViewModel>());
         }
@@ -26,6 +29,15 @@ namespace Client.Controllers
         // GET: GameController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
+            if (!User.IsInRole("Admin"))
+            {
+                var referer = Request.Headers["Referer"].ToString();
+                if (!string.IsNullOrEmpty(referer))
+                    return Redirect(referer);
+
+                return RedirectToAction("Index", "Home"); // fallback
+            }
+
             var client = _httpFactory.CreateClient("Api");
             var game = await client.GetFromJsonAsync<GameViewModel>($"api/Game/{id}");
             if (game == null)

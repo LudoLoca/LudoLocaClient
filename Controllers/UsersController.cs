@@ -7,7 +7,7 @@ using Client.Models;
 
 namespace Client.Controllers
 {
-    [Authorize(Roles = "Admin")] // Apenas administradores podem acessar este controller
+    //[Authorize(Roles = "Admin")] // Apenas administradores podem acessar este controller. Passei esse controle para o método RedirectToRefererIfIsSimpleUser(), chamado dentro do método GET;
     public class UsersController : Controller
     {
         private readonly IHttpClientFactory _httpFactory;
@@ -17,9 +17,27 @@ namespace Client.Controllers
             _httpFactory = httpFactory;
         }
 
+        private IActionResult? RedirectToRefererIfIsSimpleUser()
+        {
+            if (!User.IsInRole("Admin"))
+            {
+                var referer = Request.Headers["Referer"].ToString();
+                if (!string.IsNullOrEmpty(referer))
+                    return Redirect(referer);
+
+                return RedirectToAction("Index", "Home"); // fallback
+            }
+
+            return null; // significa que é admin e pode seguir normalmente
+        }
+
+
         // Exibe a lista de usuários (GET: /Users)
         public async Task<IActionResult> Index()
         {
+            if (RedirectToRefererIfIsSimpleUser() is IActionResult check)
+                return check;
+
             var client = _httpFactory.CreateClient("Api");
             var users = await client.GetFromJsonAsync<List<UserViewModel>>("api/users");
             return View(users ?? new List<UserViewModel>());
