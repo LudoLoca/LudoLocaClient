@@ -46,17 +46,19 @@
 
                 <div id="mainNav" class="collapse navbar-collapse">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-controller="Health" asp-action="Index">Health</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Página Inicial</a></li>
+                        <!--
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacidade</a></li>
+                       
+                        <li class="nav-item"><a class="nav-link" asp-controller="Health" asp-action="Index">Controle</a></li>-->
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Users" asp-action="Index">Users</a>
+                            <a class="nav-link" asp-controller="Users" asp-action="Index">Usuário</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Games" asp-action="Index">Games</a>
+                            <a class="nav-link" asp-controller="Games" asp-action="Index">Jogos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Genre" asp-action="Index">Genre</a>
+                            <a class="nav-link" asp-controller="Genre" asp-action="Index">Gênero</a>
                         </li>
                         <li class="nav-item"></li>
                              <a class="nav-link" asp-controller="GameListing" asp-action="Index">Aluguel</a>
@@ -73,17 +75,17 @@
                         <!-- Logout MVC (visível apenas se autenticado pelo MVC) -->
                         <form id="mvcLogoutForm" asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Saída</button>
                         </form>
 
                         <!-- Logout API (visível apenas se autenticado pela API) -->
-                        <button id="apiLogoutBtn" class="btn btn-outline-danger btn-sm d-none" type="button">Logout</button>
+                        <button id="apiLogoutBtn" class="btn btn-outline-danger btn-sm d-none" type="button">Saída</button>
 
                         <!-- Links de Login/Registro (visíveis apenas se não autenticado) -->
                         <a id="loginLink" class="btn btn-outline-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
                            asp-controller="Account" asp-action="Login">Login</a>
                         <a id="registerLink" class="btn btn-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
-                           asp-controller="Account" asp-action="Register">Register</a>
+                           asp-controller="Account" asp-action="Register">Criar conta</a>
                     </div>
                 </div>
             </div>

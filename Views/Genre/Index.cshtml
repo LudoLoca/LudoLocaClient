@@ -22,11 +22,11 @@ else
             @if (ViewBag.IsAdmin)
             {
                 <th>
-                    @Html.DisplayNameFor(model => model.Id)
+                    Identificação
                 </th>           
             }
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Nome
             </th>
             <th></th>
         </tr>
@@ -46,9 +46,9 @@ else
             <td>
                     @if (ViewBag.IsAdmin)
                     {
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
                         <br>
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        @Html.ActionLink("Deletar", "Delete", new { id = item.Id })
                     }
             </td>
         </tr>

@@ -20,17 +20,17 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Password" class="form-label"></label>
+        <label asp-for="Password" class="form-label">Senha</label>
         <input asp-for="Password" type="password" class="form-control" autocomplete="current-password" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <div class="form-check mb-3">
         <input asp-for="RememberMe" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label"></label>
+        <label asp-for="RememberMe" class="form-check-label">Lembrar</label>
     </div>
 
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="submit" class="btn btn-primary">Entrar</button>
 </form>
 
 @section Scripts {
