@@ -21,13 +21,13 @@
 
     <div class="form-group">
         <label asp-for="PricePerDay">Preço</label>
-        <input asp-for="PricePerDay" class="form-control" step="0.01" />
+        <input asp-for="PricePerDay" class="form-control" step="0.01" required />
         <span asp-validation-for="PricePerDay" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="ConditionNotes">Notas de condições</label>
-        <textarea asp-for="ConditionNotes" class="form-control"></textarea>
+        <textarea asp-for="ConditionNotes" class="form-control" required ></textarea>
     </div>
 
     <div class="form-group form-check">
