@@ -5,16 +5,26 @@
 }
 
 <h1>Gêneros</h1>
-
-<p>
-    <a asp-action="Create">Adicionar Gênero</a>
-</p>
+@if (ViewBag.IsAdmin)
+{
+    <p>
+        <a asp-action="Create">Adicionar Gênero</a>
+    </p>
+}
+else
+{
+    <p>Confira os gêneros cadastrados no nosso sistema!</p>
+    <p>Em breve você poderá clicar no gênero e ver o jogos disponíveis.😉</p>
+}
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Identificação
-            </th>
+            @if (ViewBag.IsAdmin)
+            {
+                <th>
+                    Identificação
+                </th>           
+            }
             <th>
                 Nome
             </th>
@@ -24,15 +34,22 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
+            @if (ViewBag.IsAdmin)
+            {         
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Deletar", "Delete", new { id = item.Id })
+                    @if (ViewBag.IsAdmin)
+                    {
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                        <br>
+                        @Html.ActionLink("Deletar", "Delete", new { id = item.Id })
+                    }
             </td>
         </tr>
 }

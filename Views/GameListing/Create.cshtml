@@ -1,0 +1,44 @@
+﻿@model Client.Models.GameListingCreateViewModel
+
+@{
+    ViewData["Title"] = "Criar Game Listing";
+}
+
+<h2>Criar Aluguel</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="SelectedGameId">Jogo</label>
+        <select asp-for="SelectedGameId"
+                class="form-control"
+                asp-items="@(new SelectList(Model.AvailableGames, "Id", "Title"))">
+            <option value="">-- Selecione um jogo --</option>
+        </select>
+        <span asp-validation-for="SelectedGameId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PricePerDay">Preço</label>
+        <input asp-for="PricePerDay" class="form-control" step="0.01" required />
+        <span asp-validation-for="PricePerDay" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ConditionNotes">Notas de condições</label>
+        <textarea asp-for="ConditionNotes" class="form-control" required ></textarea>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="IsAvailable" class="form-check-input" />
+        <label asp-for="IsAvailable" class="form-check-label">Disponível</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Criar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

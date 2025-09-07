@@ -5,7 +5,7 @@ using Client.Models;
 
 namespace Client.Controllers
 {
-    [Authorize(Roles = "Admin")] // Apenas administradores podem acessar este controller
+    //[Authorize(Roles = "Admin")] // Apenas administradores podem acessar este controller
     public class GenreController : Controller
     {
         private readonly IHttpClientFactory _httpFactory;
@@ -20,12 +20,25 @@ namespace Client.Controllers
         {
             var client = _httpFactory.CreateClient("Api");
             var genres = await client.GetFromJsonAsync<List<GenreViewModel>>("api/Genre");
+            var isAdmin = User.IsInRole("Admin");
+
+            ViewBag.IsAdmin = isAdmin;
+
             return View(genres ?? new List<GenreViewModel>());
         }
 
         // GET: GenreController/Create
         public IActionResult Create()
         {
+            if (!User.IsInRole("Admin"))
+            {
+                var referer = Request.Headers["Referer"].ToString();
+                if (!string.IsNullOrEmpty(referer))
+                    return Redirect(referer);
+
+                return RedirectToAction("Index", "Home"); // fallback
+            }
+
             return View();
         }
 

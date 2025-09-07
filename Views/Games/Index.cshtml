@@ -6,16 +6,25 @@
 
 <h1>Jogos</h1>
 
-<p>
-    <a asp-action="Create">Adicionar Jogo</a>
-</p>
+@if (ViewBag.IsAdmin)
+{
+    <p>
+        <a asp-action="Create">Adicionar Jogo</a>
+    </p>
+}
+else
+{
+    <p>Confira os jogos cadastrados no nosso sistema!</p>
+}
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Núm. de Identificação
-               
-            </th>
+            @if (ViewBag.IsAdmin)
+            {                
+                <th>
+                    Núm. de Identificação
+                </th>
+            }
             <th>
                 Título
             </th>
@@ -52,9 +61,12 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
+            @if (ViewBag.IsAdmin)
+            {                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
@@ -86,9 +98,15 @@
                 @(string.Join(", ", item.Genres.Select(g => g.Name)))
             </td>
             <td>
-                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Detalhes", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Excluir", "Delete", new { id = item.Id })
+                @Html.ActionLink("Detalhes", "Details", new { id = item.Id })
+                <br>
+                
+                @if (ViewBag.IsAdmin)
+                {                        
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                    <br>
+                    @Html.ActionLink("Excluir", "Delete", new { id = item.Id })
+                }
             </td>
         </tr>
 }
