@@ -15,15 +15,20 @@ namespace Client.Controllers
             _httpFactory = httpFactory;
         }
 
+        // GET: GameListingController | /api/GameListing
         public async Task<IActionResult> Index()
         {
             var client = _httpFactory.CreateClient("Api");
             var gameListings = await client.GetFromJsonAsync<List<GameListingViewModel>>("api/GameListing");
+            var isAdmin = User.IsInRole("Admin");
+
+            ViewBag.IsAdmin = isAdmin;
 
             return View(gameListings ?? new List<GameListingViewModel>());
         }
-        
+
         // FALTA IMPLEMENTAR
+        // GET: GameListingController/Details
         //public async Task<IActionResult> Details(Guid id)
         //{
         //    var client = _httpFactory.CreateClient("Api");
@@ -32,7 +37,9 @@ namespace Client.Controllers
         //        return NotFound();
         //    return View(gameListing);
         //}
+        
 
+        // GET: GameListingController/Create
         public async Task<IActionResult> Create()
         {
             var client = _httpFactory.CreateClient("Api");
@@ -46,6 +53,7 @@ namespace Client.Controllers
             return View(vm);
         }
 
+        // POST: GameListingController/Create | /api/GameListing
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(GameListingCreateViewModel vm)
