@@ -3,7 +3,7 @@
     ViewData["Title"] = "Register";
 }
 
-<h2>Register</h2>
+<h2>Criar conta</h2>
 
 <form asp-controller="Account" asp-action="Register" method="post" class="mt-3">
     @Html.AntiForgeryToken()
@@ -16,18 +16,18 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Password" class="form-label"></label>
+        <label asp-for="Password" class="form-label">Senha</label>
         <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="ConfirmPassword" class="form-label"></label>
+        <label asp-for="ConfirmPassword" class="form-label">Confirmar senha</label>
         <input asp-for="ConfirmPassword" class="form-control" type="password" autocomplete="new-password" />
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-primary">Criar conta</button>
 </form>
 
 @section Scripts {

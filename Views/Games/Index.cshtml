@@ -13,37 +13,38 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Núm. de Identificação
+               
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                Título
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Descrição
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Publisher)
+                Fabricante
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.YearPublished)
+                Ano de lançamento
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MinPlayers)
+                Mín. de jogadores
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MaxPlayers)
+                Máx. de jogadores
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlayTimeMinutes)
+                Tempo por partida
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Designer)
+                Criador
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
+                Lançado para Aluguel 
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Genres)
+                Gênero
             </th>
             <th>
             </tr>
@@ -85,9 +86,9 @@
                 @(string.Join(", ", item.Genres.Select(g => g.Name)))
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detalhes", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Excluir", "Delete", new { id = item.Id })
             </td>
         </tr>
 }
