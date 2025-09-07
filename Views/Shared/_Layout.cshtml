@@ -16,7 +16,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] - Client</title>
+    <title>@ViewData["Title"] - LudoLoca</title>
 
     <!-- Script para aplicar o tema (claro/escuro) antes do carregamento -->
     <script>
@@ -38,7 +38,7 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom" id="topNav">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Client</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LudoLoca</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
                         aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -51,9 +51,11 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacidade</a></li>
                        
                         <li class="nav-item"><a class="nav-link" asp-controller="Health" asp-action="Index">Controle</a></li>-->
+                        
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Users" asp-action="Index">Usuário</a>
                         </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Games" asp-action="Index">Jogos</a>
                         </li>
@@ -75,11 +77,11 @@
                         <!-- Logout MVC (visível apenas se autenticado pelo MVC) -->
                         <form id="mvcLogoutForm" asp-controller="Account" asp-action="Logout" method="post" class="m-0 p-0">
                             @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Saída</button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Sair</button>
                         </form>
 
                         <!-- Logout API (visível apenas se autenticado pela API) -->
-                        <button id="apiLogoutBtn" class="btn btn-outline-danger btn-sm d-none" type="button">Saída</button>
+                        <button id="apiLogoutBtn" class="btn btn-outline-danger btn-sm d-none" type="button">Sair</button>
 
                         <!-- Links de Login/Registro (visíveis apenas se não autenticado) -->
                         <a id="loginLink" class="btn btn-outline-primary btn-sm @(isMvcAuthed ? "d-none" : "")"
