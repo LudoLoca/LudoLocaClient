@@ -1,0 +1,66 @@
+@model IEnumerable<Client.Models.GameListingViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Jogos para Alugar</h1>
+
+<p>
+    <a asp-action="Create">Alugue um jogo seu!</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                Título do Jogo
+            </th>
+            <th>
+                E-mail do Proprietário
+            </th>
+            <th>
+                Notas de Condições
+            </th>
+            <th>
+                Preço por Dia
+            </th>
+            <th>
+                Disponível
+            </th>
+            <th>
+                Criado em
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @(item.Game?.Title ?? "Sem título")
+            </td>
+            <td>
+                    @(item.OwnerUser.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConditionNotes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePerDay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsAvailable)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
