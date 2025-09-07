@@ -12,9 +12,12 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
+            @if (ViewBag.IsAdmin)
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+            }
             <th>
                 Título do Jogo
             </th>
@@ -39,20 +42,23 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
+            @if (ViewBag.IsAdmin)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+            }
             <td>
                 @(item.Game?.Title ?? "Sem título")
             </td>
             <td>
-                    @(item.OwnerUser.Email)
+                @(item.OwnerUser.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ConditionNotes)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PricePerDay)
+                R$@Html.DisplayFor(modelItem => item.PricePerDay)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsAvailable)
