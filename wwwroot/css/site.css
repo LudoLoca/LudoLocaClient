@@ -1,22 +1,533 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+/* -------------------- */
+/* Rough.js Navbar & Buttons Styles */
+/* -------------------- */
+
+/* Use Fira Code for a tech/gaming look */
+body, .rough-link, .rough-btn {
+    font-family: 'Fira Code', 'Consolas', 'Menlo', 'Monaco', monospace;
+}
+
+/* Navbar container and canvas */
+.rough-navbar-container {
+    position: relative;
+    width: 100%;
+    height: 90px;
+    margin-bottom: 1rem;
+}
+
+/* Navbar content always above the canvas */
+.rough-navbar-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    justify-content: space-between;
+}
+
+/* Hamburger button hidden on desktop */
+.hamburger-btn {
+    display: none;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    height: 90px; /* match navbar height */
+    width: 48px;
+    padding: 0;
+    margin: 0 0.5rem;
+    background: transparent;
+    border: none;
+    z-index: 3;
+}
+
+/* Nav links flex row on desktop */
+.rough-navbar-links {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    margin-left: 2rem;
+    position: static;
+    background: none;
+    box-shadow: none;
+}
+
+/* Navbar actions (right side) */
+.rough-navbar-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Rough.js button containers */
+.rough-btn-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+/* The canvas for the button background */
+.rough-btn-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* The button itself, always above the canvas */
+.rough-btn {
+    position: relative;
+    z-index: 1;
+    width: 150px; /* or 120px */
+    height: 36px;
+    background: transparent;
+    border: none;
+    font-weight: bold;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+    .rough-btn:focus {
+        outline: 2px solid #888;
+    }
+
+/* Links styled like buttons */
+.rough-link {
+    font-weight: bold;
+    color: inherit;
+    text-decoration: none;
+    padding: 0 8px;
+    margin-right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+}
+
+    .rough-link:hover {
+        text-decoration: underline;
+    }
+
+/* Wider button for "Criar conta" */
+.wide-btn-container {
+    width: 220px;
+}
+
+.wide-btn {
+    width: 220px !important;
+    min-width: 0;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* For standard buttons (navbar, Criar, Cancelar) */
+.rough-btn-container:not(.wide-btn-container) {
+    width: 120px; /* or 150px for navbar if needed */
+}
+.rough-btn-canvas {
+    width: 100% !important;
+    height: 36px !important;
+}
+.rough-btn {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Responsive: stack links and show hamburger on small screens */
+@media (max-width: 900px) {
+    .rough-navbar-content {
+        flex-wrap: wrap;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .hamburger-btn {
+        display: flex;
+    }
+
+    .rough-navbar-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 90px;
+        left: 0;
+        z-index: 10;
+        padding: 1rem 0;
+        background: var(--navbar-bg, #fff);
+        box-shadow: none;
+    }
+
+        .rough-navbar-links.open {
+            display: flex;
+        }
+
+    .rough-navbar-actions {
+        margin-left: 0;
+        margin-top: 1rem;
+        justify-content: flex-start;
+    }
+}
+
+/* Optional: dark mode background for mobile menu */
+html[data-bs-theme='dark'] .rough-navbar-links {
+    --navbar-bg: #222;
+}
+
+html[data-bs-theme='light'] .rough-navbar-links {
+    --navbar-bg: #fff;
+}
+
+/* ----------- Rough.js Details View Styles ----------- */
+
+/* Cartão de título rough.js */
+.rough-title-card {
+    position: relative;
+    margin: 2rem auto 1rem auto;
+    max-width: 500px;
+    text-align: center;
+}
+
+.rough-title-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 60px;
+    pointer-events: none;
+}
+
+.rough-title-content {
+    position: relative;
+    z-index: 1;
+    padding: 1rem 0;
+}
+
+/* Cartão principal de informações */
+.rough-card-container {
+    position: relative;
+    margin: 0 auto 2rem auto;
+    max-width: 500px;
+}
+
+.rough-card-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.rough-card-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Seção de detalhes */
+.details-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.details-label {
+    font-weight: bold;
+    min-width: 100px;
+}
+
+.details-value {
+    flex: 1 1 auto;
+    word-break: break-word;
+}
+
+/* Badge de status */
+.status-badge {
+    padding: 0.2em 0.8em;
+    border-radius: 1em;
+    font-weight: bold;
+    display: inline-block;
+}
+
+    .status-badge.available {
+        color: #1a7f37;
+        background: #e6f4ea;
+    }
+
+    .status-badge.unavailable {
+        color: #b91c1c;
+        background: #fee2e2;
+    }
+
+/* Botão Voltar destacado */
+.details-back-btn {
+    margin-top: 2rem;
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 600px) {
+    .rough-title-card, .rough-card-container {
+        max-width: 98vw;
+    }
+
+    .rough-card-content {
+        padding: 1rem 0.5rem;
+    }
+
+    .details-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+
+    .details-label {
+        min-width: 0;
+    }
+}
+
+/* Cartão do formulário */
+.rough-card-container {
+    position: relative;
+    margin: 2rem auto;
+    max-width: 500px;
+}
+
+.rough-card-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.rough-card-content {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Validação summary */
+.rough-validation-summary {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.rough-validation-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.rough-validation-content {
+    position: relative;
+    z-index: 1;
+    padding: 0.5rem 1rem;
+}
+
+/* Ações do formulário */
+.rough-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* Link de ação destacado */
+.action-link-container {
+    margin-bottom: 2rem;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .rough-card-container {
+        max-width: 98vw;
+    }
+
+    .rough-card-content {
+        padding: 1rem 0.5rem;
+    }
+
+    .rough-form-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+}
+
+/* ---------- Rough.js Input Styles ---------- */
+
+/* Container para campos de entrada rough.js */
+.rough-input-container {
+    position: relative;
+    display: block;
+}
+
+/* Canvas para fundo do campo de entrada */
+.rough-input-canvas {
+    position: absolute;
+    top: 0; left: 0; z-index: 0;
+    pointer-events: none;
+}
+
+/* Estilos para inputs, selects e textareas dentro do container rough.js */
+.rough-input-container input,
+.rough-input-container select,
+.rough-input-container textarea {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+.rough-input-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+/* Ajustes específicos para o botão de registro */
+#registerBtnContainer {
+    width: 150px !important;
+}
+#registerBtnContainer .rough-btn-canvas,
+#registerBtnContainer .rough-btn {
+    width: 150px !important;
+}
+
+/* Arrow icon for mobile menu toggle */
+.arrow-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    transition: transform 0.2s;
+    position: relative;
+}
+.arrow-icon::before {
+    content: '';
+    display: block;
+    width: 0.5em;
+    height: 0.5em;
+    border-right: 4px solid currentColor;
+    border-bottom: 4px solid currentColor;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -60%) rotate(45deg);
+    transition: transform 0.2s;
+}
+
+/* When menu is open, rotate arrow up */
+.hamburger-btn[aria-expanded="true"] .arrow-icon::before {
+    transform: translate(-50%, -40%) rotate(-135deg);
+}
+
+/* Desktop: show main links and auth links, hide more-menu */
+@media (min-width: 901px) {
+    .main-links { display: flex !important; }
+    .auth-links-desktop { display: flex !important; }
+    .more-menu { display: none !important; }
+    .hamburger-btn { display: flex; } /* Show the arrow as a "more" button */
+}
+
+/* Mobile: hide menu by default, show when .open is present */
+@media (max-width: 900px) {
+    .more-menu {
+        display: none !important;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 90px;
+        left: 0;
+        z-index: 10;
+        padding: 1rem 0;
+        background: var(--navbar-bg, #fff);
+        box-shadow: none;
+    }
+    .more-menu.open {
+        display: flex !important;
+    }
+    .hamburger-btn {
+        display: flex;
+    }
+    .main-links,
+    .auth-links-desktop {
+        display: none !important;
+    }
+}
+
+/* Desktop: hide more-menu and hamburger */
+@media (min-width: 901px) {
+    .more-menu {
+        display: none !important;
+    }
+    .hamburger-btn {
+        display: none !important;
+    }
+    .main-links {
+        display: flex !important;
+    }
+    .auth-links-desktop {
+        display: flex !important;
+    }
 }
