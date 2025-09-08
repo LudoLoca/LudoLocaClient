@@ -1,38 +1,151 @@
 ﻿@model Client.Models.GenreViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Adicionar Gênero";
 }
 
-<h1>Gênero</h1>
-
-<h4>Adicionar Gênero</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @* <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Nome do gênero</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<!-- Cartão do formulário -->
+<div class="rough-card-container">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content">
+        <h2>Adicionar Gênero</h2>
+        <form asp-action="Create" class="rough-form" autocomplete="off">
+            <div class="rough-validation-summary">
+                <canvas class="rough-validation-canvas"></canvas>
+                <div class="rough-validation-content">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Cadastrar gênero" class="btn btn-primary" />
+                <label asp-for="Name">Nome do gênero</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="Name" class="form-control" />
+                </div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="rough-form-actions">
+                <div class="rough-btn-container">
+                    <canvas class="rough-btn-canvas" width="150" height="36"></canvas>
+                    <button type="submit" class="rough-btn rough-link">Cadastrar gênero</button>
+                </div>
+                <div class="rough-btn-container">
+                    <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
+                    <a asp-action="Index" class="rough-btn rough-link wide-btn btn-secondary">Voltar</a>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Voltar</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // rough.js card, validation, and input focus
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cartão principal
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+            // Validação summary
+            var valContainer = document.querySelector('.rough-validation-summary');
+            if (valContainer) {
+                var valCanvas = valContainer.querySelector('.rough-validation-canvas');
+                var valContent = valContainer.querySelector('.rough-validation-content');
+                function drawVal() {
+                    var rect = valContent.getBoundingClientRect();
+                    valCanvas.width = rect.width + 24;
+                    valCanvas.height = rect.height + 24;
+                    valCanvas.style.width = (rect.width + 24) + 'px';
+                    valCanvas.style.height = (rect.height + 24) + 'px';
+                    valCanvas.style.position = 'absolute';
+                    valCanvas.style.top = 0;
+                    valCanvas.style.left = 0;
+                    valCanvas.style.zIndex = 0;
+                    var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                    var fill = theme === 'dark' ? '#fee2e2' : '#fff3cd';
+                    var stroke = theme === 'dark' ? '#b91c1c' : '#856404';
+                    var rc = rough.canvas(valCanvas);
+                    rc.rectangle(6, 6, rect.width + 12, rect.height + 12, {
+                        stroke: stroke,
+                        fill: fill,
+                        fillStyle: 'solid',
+                        roughness: 2
+                    });
+                }
+                setTimeout(drawVal, 200);
+                window.addEventListener('resize', drawVal);
+                var observer2 = new MutationObserver(drawVal);
+                observer2.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+            }
+
+            // Campos de entrada com destaque amarelo ao focar
+            function drawInputRough(input, active) {
+                var container = input.closest('.rough-input-container');
+                if (!container) return;
+                var canvas = container.querySelector('.rough-input-canvas');
+                if (!canvas) return;
+                var rect = input.getBoundingClientRect();
+                canvas.width = rect.width + 12;
+                canvas.height = rect.height + 12;
+                canvas.style.width = (rect.width + 12) + 'px';
+                canvas.style.height = (rect.height + 12) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var rc = rough.canvas(canvas);
+                if (active) {
+                    rc.rectangle(6, 6, rect.width, rect.height, {
+                        stroke: '#FFD600',
+                        fill: '#FFF9C4',
+                        fillStyle: 'solid',
+                        roughness: 2
+                    });
+                } else {
+                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            document.querySelectorAll('.rough-input-container input, .rough-input-container select, .rough-input-container textarea').forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    drawInputRough(input, true);
+                });
+                input.addEventListener('blur', function () {
+                    drawInputRough(input, false);
+                });
+                window.addEventListener('resize', function () {
+                    if (document.activeElement === input) {
+                        drawInputRough(input, true);
+                    }
+                });
+            });
+        });
+    </script>
 }

@@ -1,32 +1,69 @@
 ﻿@model Client.Models.GenreViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Deletar Gênero";
 }
 
-<h1>Deletar</h1>
-
-<h3>Você tem certeza que gostaria de excluir?</h3>
-<div>
-    
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Número de identificação
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            Nome
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Excluir" class="btn btn-danger" /> |
-        <a asp-action="Index">Voltar</a>
-    </form>
+<!-- Cartão do formulário de exclusão -->
+<div class="rough-card-container">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content">
+        <h2 style="color:#b91c1c;">Você tem certeza que gostaria de excluir?</h2>
+        <div class="details-section">
+            <span class="details-label">Número de identificação:</span>
+            <span class="details-value">@Model.Id</span>
+        </div>
+        <div class="details-section">
+            <span class="details-label">Nome:</span>
+            <span class="details-value">@Model.Name</span>
+        </div>
+        <form asp-action="Delete" class="mt-4">
+            <div class="rough-form-actions">
+                <div class="rough-btn-container">
+                    <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
+                    <input type="submit" value="Excluir" class="rough-btn rough-link btn-danger" style="color:#b91c1c;" />
+                </div>
+                <div class="rough-btn-container">
+                    <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
+                    <a asp-action="Index" class="rough-btn rough-link wide-btn btn-secondary">Voltar</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // rough.js card for the delete form
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+        });
+    </script>
+}

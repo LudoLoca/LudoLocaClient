@@ -1,102 +1,248 @@
 ﻿@model Client.Models.GameViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Jogo";
 }
 
-<h1>Jogos</h1>
+<!-- Cartão do formulário -->
+<div class="rough-card-container">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content">
+        <h2>Editar Jogo</h2>
+        <form asp-action="Edit" class="rough-form" autocomplete="off">
+            <div class="rough-validation-summary">
+                <canvas class="rough-validation-canvas"></canvas>
+                <div class="rough-validation-content">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+            </div>
 
-<h4>Editar Jogo</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Id" class="control-label">Número de Identificação</label>
-                <input asp-for="Id" class="form-control" />
+                <label asp-for="Id">Número de Identificação</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="Id" class="form-control" readonly />
+                </div>
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label">Título</label>
-                <input asp-for="Title" class="form-control" />
+                <label asp-for="Title">Título</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="Title" class="form-control" />
+                </div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label">Descrição</label>
-                <input asp-for="Description" class="form-control" />
+                <label asp-for="Description">Descrição</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="Description" class="form-control" />
+                </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Publisher" class="control-label">Fabricante</label>
-                <input asp-for="Publisher" class="form-control" />
+                <label asp-for="Publisher">Fabricante</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="Publisher" class="form-control" />
+                </div>
                 <span asp-validation-for="Publisher" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="YearPublished" class="control-label">Ano de lançamento</label>
-                <input asp-for="YearPublished" class="form-control" />
+                <label asp-for="YearPublished">Ano de lançamento</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="YearPublished" class="form-control" />
+                </div>
                 <span asp-validation-for="YearPublished" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MinPlayers" class="control-label">Min.de jogadores</label>
-                <input asp-for="MinPlayers" class="form-control" />
+                <label asp-for="MinPlayers">Min. de jogadores</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="MinPlayers" class="form-control" />
+                </div>
                 <span asp-validation-for="MinPlayers" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MaxPlayers" class="control-label">Máx.de jogadores</label>
-                <input asp-for="MaxPlayers" class="form-control" />
+                <label asp-for="MaxPlayers">Máx. de jogadores</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="MaxPlayers" class="form-control" />
+                </div>
                 <span asp-validation-for="MaxPlayers" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PlayTimeMinutes" class="control-label">Tempo por partida </label>
-                <input asp-for="PlayTimeMinutes" class="form-control" />
+                <label asp-for="PlayTimeMinutes">Tempo por partida</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="PlayTimeMinutes" class="form-control" />
+                </div>
                 <span asp-validation-for="PlayTimeMinutes" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Designer" class="control-label">Criador</label>
-                <input asp-for="Designer" class="form-control" />
+                <label asp-for="Designer">Criador</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="Designer" class="form-control" />
+                </div>
                 <span asp-validation-for="Designer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label">Lançado para aluguel</label>
-                <input asp-for="CreatedAt" class="form-control" />
+                <label asp-for="CreatedAt">Lançado para aluguel</label>
+                <div class="rough-input-container">
+                    <canvas class="rough-input-canvas"></canvas>
+                    <input asp-for="CreatedAt" class="form-control" />
+                </div>
                 <span asp-validation-for="CreatedAt" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label class="control-label">Gêneros</label>
-                @foreach (var genre in Model.AllGenres)
-                {
-                    <div class="form-check">
-                        @{
-                            bool isChecked = Model.Genres != null && Model.Genres.Any(g => g.Id == genre.Id);
-                        }
-
-                        <input type="checkbox"
-                               class="form-check-input"
-                               id="genre_@genre.Id"
-                               name="SelectedGenres"
-                               value="@genre.Id"
-                               @(isChecked ? "checked=\"checked\"" : "") />
-
-                        <label class="form-check-label" for="genre_@genre.Id">
-                            @genre.Name
-                        </label>
-                    </div>
-                }
+                <div>
+                    @foreach (var genre in Model.AllGenres)
+                    {
+                        <div class="form-check" style="display:inline-block; margin-right:1rem;">
+                            @{
+                                bool isChecked = Model.Genres != null && Model.Genres.Any(g => g.Id == genre.Id);
+                            }
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="genre_@genre.Id"
+                                   name="SelectedGenres"
+                                   value="@genre.Id"
+                                   @(isChecked ? "checked=\"checked\"" : "") />
+                            <label class="form-check-label" for="genre_@genre.Id">
+                                @genre.Name
+                            </label>
+                        </div>
+                    }
+                </div>
             </div>
 
-            <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
+            <div class="rough-form-actions">
+                <div class="rough-btn-container">
+                    <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
+                    <button type="submit" class="rough-btn rough-link">Salvar</button>
+                </div>
+                <div class="rough-btn-container">
+                    <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
+                    <a asp-action="Index" class="rough-btn rough-link wide-btn btn-secondary">Voltar</a>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Voltar</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // rough.js card, validation, and input focus
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cartão principal
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+            // Validação summary
+            var valContainer = document.querySelector('.rough-validation-summary');
+            if (valContainer) {
+                var valCanvas = valContainer.querySelector('.rough-validation-canvas');
+                var valContent = valContainer.querySelector('.rough-validation-content');
+                function drawVal() {
+                    var rect = valContent.getBoundingClientRect();
+                    valCanvas.width = rect.width + 24;
+                    valCanvas.height = rect.height + 24;
+                    valCanvas.style.width = (rect.width + 24) + 'px';
+                    valCanvas.style.height = (rect.height + 24) + 'px';
+                    valCanvas.style.position = 'absolute';
+                    valCanvas.style.top = 0;
+                    valCanvas.style.left = 0;
+                    valCanvas.style.zIndex = 0;
+                    var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                    var fill = theme === 'dark' ? '#fee2e2' : '#fff3cd';
+                    var stroke = theme === 'dark' ? '#b91c1c' : '#856404';
+                    var rc = rough.canvas(valCanvas);
+                    rc.rectangle(6, 6, rect.width + 12, rect.height + 12, {
+                        stroke: stroke,
+                        fill: fill,
+                        fillStyle: 'solid',
+                        roughness: 2
+                    });
+                }
+                setTimeout(drawVal, 200);
+                window.addEventListener('resize', drawVal);
+                var observer2 = new MutationObserver(drawVal);
+                observer2.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+            }
+
+            // Campos de entrada com destaque amarelo ao focar
+            function drawInputRough(input, active) {
+                var container = input.closest('.rough-input-container');
+                if (!container) return;
+                var canvas = container.querySelector('.rough-input-canvas');
+                if (!canvas) return;
+                var rect = input.getBoundingClientRect();
+                canvas.width = rect.width + 12;
+                canvas.height = rect.height + 12;
+                canvas.style.width = (rect.width + 12) + 'px';
+                canvas.style.height = (rect.height + 12) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var rc = rough.canvas(canvas);
+                if (active) {
+                    rc.rectangle(6, 6, rect.width, rect.height, {
+                        stroke: '#FFD600',
+                        fill: '#FFF9C4',
+                        fillStyle: 'solid',
+                        roughness: 2
+                    });
+                } else {
+                    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            document.querySelectorAll('.rough-input-container input, .rough-input-container select, .rough-input-container textarea').forEach(function (input) {
+                input.addEventListener('focus', function () {
+                    drawInputRough(input, true);
+                });
+                input.addEventListener('blur', function () {
+                    drawInputRough(input, false);
+                });
+                window.addEventListener('resize', function () {
+                    if (document.activeElement === input) {
+                        drawInputRough(input, true);
+                    }
+                });
+            });
+        });
+    </script>
 }

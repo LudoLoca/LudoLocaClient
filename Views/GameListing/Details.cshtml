@@ -1,13 +1,8 @@
 ﻿@model Client.Models.GameListingViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Aluguel";
 }
-
-@*
-    Detalhes do aluguel em cartões estilizados com rough.js.
-    Layout responsivo, moderno e fácil de navegar.
-*@
 
 <!-- Cartão de título destacado -->
 <div class="rough-title-card">
@@ -49,9 +44,11 @@
 </div>
 
 <!-- Botão Voltar destacado -->
-<div class="rough-btn-container details-back-btn">
-    <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
-    <a asp-action="Index" class="rough-btn rough-link wide-btn">Voltar</a>
+<div class="rough-form-actions" style="margin-top:2rem; justify-content:center;">
+    <div class="rough-btn-container details-back-btn">
+        <canvas class="rough-btn-canvas" width="120" height="36"></canvas>
+        <a asp-action="Index" class="rough-btn rough-link" aria-label="Voltar para a lista">Voltar</a>
+    </div>
 </div>
 
 @section Scripts {

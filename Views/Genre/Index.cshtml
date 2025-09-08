@@ -1,57 +1,113 @@
 ﻿@model IEnumerable<Client.Models.GenreViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gêneros";
 }
 
 <h1>Gêneros</h1>
 @if (ViewBag.IsAdmin)
 {
-    <p>
-        <a asp-action="Create">Adicionar Gênero</a>
-    </p>
+    <div class="rough-btn-container action-link-container wide-btn-container" style="margin-bottom: 2rem;">
+        <canvas class="rough-btn-canvas" width="220" height="36"></canvas>
+        <a asp-action="Create" class="rough-btn rough-link wide-btn">Adicionar Gênero</a>
+    </div>
 }
 else
 {
     <p>Confira os gêneros cadastrados no nosso sistema!</p>
-    <p>Em breve você poderá clicar no gênero e ver o jogos disponíveis.😉</p>
+    <p>Em breve você poderá clicar no gênero e ver os jogos disponíveis.😉</p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            @if (ViewBag.IsAdmin)
-            {
-                <th>
-                    Identificação
-                </th>           
-            }
-            <th>
-                Nome
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            @if (ViewBag.IsAdmin)
-            {         
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-            }
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                    @if (ViewBag.IsAdmin)
+
+<!-- Cartão da tabela de gêneros -->
+<div class="rough-card-container">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content" style="padding: 1rem 0.5rem;">
+        <!-- Top scrollbar -->
+        <div class="scrollbar-top" style="overflow-x: auto;">
+            <div style="width: 600px; height: 1px;"></div>
+        </div>
+        <!-- Actual scrollable table -->
+        <div class="scrollbar-bottom" style="overflow-x: auto;">
+            <table class="table mb-0" style="min-width: 600px;">
+                <thead>
+                    <tr>
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <th>Identificação</th>
+                        }
+                        <th>Nome</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                        <br>
-                        @Html.ActionLink("Deletar", "Delete", new { id = item.Id })
+                        <tr>
+                            @if (ViewBag.IsAdmin)
+                            {
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                            }
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>
+                                @if (ViewBag.IsAdmin)
+                                {
+                                    @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                                    <br>
+                                    @Html.ActionLink("Deletar", "Delete", new { id = item.Id })
+                                }
+                            </td>
+                        </tr>
                     }
-            </td>
-        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // rough.js card for the table and sync scrollbars
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+            // Sync top and bottom scrollbars
+            var top = document.querySelector('.scrollbar-top');
+            var bottom = document.querySelector('.scrollbar-bottom');
+            if (top && bottom) {
+                top.addEventListener('scroll', function () {
+                    bottom.scrollLeft = top.scrollLeft;
+                });
+                bottom.addEventListener('scroll', function () {
+                    top.scrollLeft = bottom.scrollLeft;
+                });
+            }
+        });
+    </script>
 }
-    </tbody>
-</table>

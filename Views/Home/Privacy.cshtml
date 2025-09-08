@@ -4,3 +4,47 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Aqui estão as políticas de privacidade.</p>
+
+<!-- Rodapé estilizado com rough.js -->
+<div class="rough-card-container" style="max-width: 400px; margin: 2rem auto 0 auto;">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content" style="text-align: center; padding: 1rem 0;">
+        <span style="font-weight: bold;">Equipe LudoLoca 2025</span>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // rough.js card for the privacy footer
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+        });
+    </script>
+}

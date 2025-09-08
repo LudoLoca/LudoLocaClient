@@ -531,3 +531,39 @@ html[data-bs-theme='light'] .rough-navbar-links {
         display: flex !important;
     }
 }
+
+/* Scrollbar styles */
+.scrollbar-top {
+    height: 16px;
+    margin-bottom: 0.5rem;
+}
+.scrollbar-bottom {
+    overflow-x: auto;
+}
+
+/* For Webkit browsers (Chrome, Edge, Safari) */
+.scrollbar-top::-webkit-scrollbar,
+.scrollbar-bottom::-webkit-scrollbar {
+    height: 18px; /* Thicker scrollbar */
+    background: transparent;
+}
+.scrollbar-top::-webkit-scrollbar-thumb,
+.scrollbar-bottom::-webkit-scrollbar-thumb {
+    background: #FFD600;
+    border-radius: 0; /* No rounded corners */
+    border: 3px solid #222; /* Thicker border for a bolder look */
+    min-width: 40px;
+}
+.scrollbar-top::-webkit-scrollbar-track,
+.scrollbar-bottom::-webkit-scrollbar-track {
+    background: #fff;
+    border-radius: 0; /* No rounded corners */
+    border: 1.5px dashed #222;
+}
+
+/* For Firefox */
+.scrollbar-top,
+.scrollbar-bottom {
+    scrollbar-width: thick; /* Thicker scrollbar */
+    scrollbar-color: #FFD600 #fff;
+}

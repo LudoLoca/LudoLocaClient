@@ -11,49 +11,105 @@
         <div class="alert alert-danger">@TempData["Error"]</div>
     }
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Email</th>
-                    <th>User Name</th>
-                    <th>Admin</th>
-                    <th class="text-end">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model)
-                {
-                    <tr>
-                        <td>@user.Email</td>
-                        <td>@user.UserName</td>
-                        <td>
-                            <form asp-action="SetAdmin" method="post" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@user.Id" />
-                                <input type="hidden" name="isAdmin" value="@(user.IsAdmin ? "false" : "true")" />
-                                <button type="submit" class="btn btn-sm @(user.IsAdmin ? "btn-success" : "btn-outline-secondary")" title="Toggle admin">
-                                    @(user.IsAdmin ? "Admin" : "Make Admin")
-                                </button>
-                            </form>
-                        </td>
-                        <td class="text-end">
-                            <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Delete this user?');">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@user.Id" />
-                                <button type="submit" class="btn btn-sm btn-danger" title="Delete user">
-                                    <i class="bi bi-trash"></i> Delete
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <!-- Cartão da tabela de usuários -->
+    <div class="rough-card-container">
+        <canvas class="rough-card-canvas"></canvas>
+        <div class="rough-card-content" style="padding: 1rem 0.5rem;">
+            <!-- Top scrollbar -->
+            <div class="scrollbar-top" style="overflow-x: auto;">
+                <div style="width: 700px; height: 1px;"></div>
+            </div>
+            <!-- Actual scrollable table -->
+            <div class="scrollbar-bottom" style="overflow-x: auto;">
+                <table class="table table-hover align-middle mb-0" style="min-width: 700px;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>User Name</th>
+                            <th>Admin</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Email</td>
+                                <td>@user.UserName</td>
+                                <td>
+                                    <form asp-action="SetAdmin" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <input type="hidden" name="isAdmin" value="@(user.IsAdmin ? "false" : "true")" />
+                                        <button type="submit" class="rough-btn rough-link btn-sm @(user.IsAdmin ? "btn-success" : "btn-outline-secondary")" title="Toggle admin" style="width:100px;">
+                                            @(user.IsAdmin ? "Admin" : "Make Admin")
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="text-end">
+                                    <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Delete this user?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <button type="submit" class="rough-btn rough-link btn-sm btn-danger" title="Delete user" style="width:100px;">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <!-- Bootstrap Icons for the trash icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script>
+        // rough.js card for the table and sync scrollbars
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+            // Sync top and bottom scrollbars
+            var top = document.querySelector('.scrollbar-top');
+            var bottom = document.querySelector('.scrollbar-bottom');
+            if (top && bottom) {
+                top.addEventListener('scroll', function () {
+                    bottom.scrollLeft = top.scrollLeft;
+                });
+                bottom.addEventListener('scroll', function () {
+                    top.scrollLeft = bottom.scrollLeft;
+                });
+            }
+        });
+    </script>
 }

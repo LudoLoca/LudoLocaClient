@@ -1,25 +1,69 @@
 ﻿@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Erro";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<!-- Cartão de erro estilizado com rough.js -->
+<div class="rough-card-container">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content">
+        <h1 class="text-danger" style="font-size:2rem;">Erro</h1>
+        <h2 class="text-danger" style="margin-bottom:1.5rem;">Ocorreu um erro ao processar sua solicitação.</h2>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
+        @if (Model.ShowRequestId)
+        {
+            <div class="details-section">
+                <span class="details-label">Request ID:</span>
+                <span class="details-value"><code>@Model.RequestId</code></span>
+            </div>
+        }
+
+        <div class="details-section" style="margin-top:1.5rem;">
+            <h3>Modo de Desenvolvimento</h3>
+            <p>
+                Trocar para o ambiente <strong>Development</strong> exibirá informações mais detalhadas sobre o erro ocorrido.
+            </p>
+            <p>
+                <strong>O ambiente Development não deve ser habilitado em aplicações publicadas.</strong>
+                Isso pode resultar na exibição de informações sensíveis para os usuários finais.
+                Para depuração local, habilite o ambiente <strong>Development</strong> configurando a variável de ambiente <strong>ASPNETCORE_ENVIRONMENT</strong> como <strong>Development</strong> e reinicie o aplicativo.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // rough.js card for the error view
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
+            }
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+        });
+    </script>
 }
-
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>

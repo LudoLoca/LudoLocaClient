@@ -1,114 +1,134 @@
 ﻿@model IEnumerable<Client.Models.GameViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Jogos";
 }
 
 <h1>Jogos</h1>
 
+<!-- Botão de ação destacado para admin -->
 @if (ViewBag.IsAdmin)
 {
-    <p>
-        <a asp-action="Create">Adicionar Jogo</a>
-    </p>
+    <div class="rough-btn-container action-link-container wide-btn-container" style="margin-bottom: 2rem;">
+        <canvas class="rough-btn-canvas" width="220" height="36"></canvas>
+        <a asp-action="Create" class="rough-btn rough-link wide-btn">Adicionar Jogo</a>
+    </div>
 }
 else
 {
     <p>Confira os jogos cadastrados no nosso sistema!</p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            @if (ViewBag.IsAdmin)
-            {                
-                <th>
-                    Núm. de Identificação
-                </th>
+
+<!-- Cartão da tabela de jogos -->
+<div class="rough-card-container">
+    <canvas class="rough-card-canvas"></canvas>
+    <div class="rough-card-content" style="padding: 1rem 0.5rem;">
+        <!-- Top scrollbar -->
+        <div class="scrollbar-top" style="overflow-x: auto;">
+            <div style="width: 1200px; height: 1px;"></div>
+        </div>
+        <!-- Actual scrollable table -->
+        <div class="scrollbar-bottom" style="overflow-x: auto;">
+            <table class="table mb-0" style="min-width: 1200px;">
+                <thead>
+                    <tr>
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <th>Núm. de Identificação</th>
+                        }
+                        <th>Título</th>
+                        <th>Descrição</th>
+                        <th>Fabricante</th>
+                        <th>Ano de lançamento</th>
+                        <th>Mín. de jogadores</th>
+                        <th>Máx. de jogadores</th>
+                        <th>Tempo por partida</th>
+                        <th>Criador</th>
+                        <th>Lançado para Aluguel</th>
+                        <th>Gênero</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @if (ViewBag.IsAdmin)
+                            {
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                            }
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Publisher)</td>
+                            <td>@Html.DisplayFor(modelItem => item.YearPublished)</td>
+                            <td>@Html.DisplayFor(modelItem => item.MinPlayers)</td>
+                            <td>@Html.DisplayFor(modelItem => item.MaxPlayers)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PlayTimeMinutes)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Designer)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                            <td>@(string.Join(", ", item.Genres.Select(g => g.Name)))</td>
+                            <td>
+                                @Html.ActionLink("Detalhes", "Details", new { id = item.Id })
+                                <br>
+                                @if (ViewBag.IsAdmin)
+                                {
+                                    @Html.ActionLink("Editar", "Edit", new { id = item.Id })
+                                    <br>
+                                    @Html.ActionLink("Excluir", "Delete", new { id = item.Id })
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // rough.js card for the table and sync scrollbars
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.querySelector('.rough-card-container');
+            var canvas = container.querySelector('.rough-card-canvas');
+            var content = container.querySelector('.rough-card-content');
+            function drawCard() {
+                var rect = content.getBoundingClientRect();
+                canvas.width = rect.width + 32;
+                canvas.height = rect.height + 32;
+                canvas.style.width = (rect.width + 32) + 'px';
+                canvas.style.height = (rect.height + 32) + 'px';
+                canvas.style.position = 'absolute';
+                canvas.style.top = 0;
+                canvas.style.left = 0;
+                canvas.style.zIndex = 0;
+                var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                var fill = theme === 'dark' ? '#222' : '#fff';
+                var stroke = theme === 'dark' ? '#fff' : '#222';
+                var rc = rough.canvas(canvas);
+                rc.rectangle(8, 8, rect.width + 16, rect.height + 16, {
+                    stroke: stroke,
+                    fill: fill,
+                    fillStyle: 'solid',
+                    roughness: 2
+                });
             }
-            <th>
-                Título
-            </th>
-            <th>
-                Descrição
-            </th>
-            <th>
-                Fabricante
-            </th>
-            <th>
-                Ano de lançamento
-            </th>
-            <th>
-                Mín. de jogadores
-            </th>
-            <th>
-                Máx. de jogadores
-            </th>
-            <th>
-                Tempo por partida
-            </th>
-            <th>
-                Criador
-            </th>
-            <th>
-                Lançado para Aluguel 
-            </th>
-            <th>
-                Gênero
-            </th>
-            <th>
-            </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            @if (ViewBag.IsAdmin)
-            {                
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
+            setTimeout(drawCard, 100);
+            window.addEventListener('resize', drawCard);
+            var observer = new MutationObserver(drawCard);
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme'] });
+
+            // Sync top and bottom scrollbars
+            var top = document.querySelector('.scrollbar-top');
+            var bottom = document.querySelector('.scrollbar-bottom');
+            if (top && bottom) {
+                top.addEventListener('scroll', function () {
+                    bottom.scrollLeft = top.scrollLeft;
+                });
+                bottom.addEventListener('scroll', function () {
+                    top.scrollLeft = bottom.scrollLeft;
+                });
             }
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YearPublished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MinPlayers)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxPlayers)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayTimeMinutes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Designer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @(string.Join(", ", item.Genres.Select(g => g.Name)))
-            </td>
-            <td>
-                @Html.ActionLink("Detalhes", "Details", new { id = item.Id })
-                <br>
-                
-                @if (ViewBag.IsAdmin)
-                {                        
-                    @Html.ActionLink("Editar", "Edit", new { id = item.Id })
-                    <br>
-                    @Html.ActionLink("Excluir", "Delete", new { id = item.Id })
-                }
-            </td>
-        </tr>
+        });
+    </script>
 }
-    </tbody>
-</table>
