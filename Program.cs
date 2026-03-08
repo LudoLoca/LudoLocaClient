@@ -2,7 +2,7 @@
 // Este arquivo define todos os serviços essenciais, middlewares e integrações necessárias para o funcionamento do frontend.
 
 var builder = WebApplication.CreateBuilder(args);
-
+//comentario de teste
 // Adiciona suporte a controllers e views (MVC padrão)
 builder.Services.AddControllersWithViews();
 
