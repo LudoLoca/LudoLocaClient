@@ -52,8 +52,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 
-// Redireciona HTTP para HTTPS
-app.UseHttpsRedirection();
 
 // Habilita arquivos estáticos (wwwroot, css, js, imagens)
 app.UseStaticFiles();
