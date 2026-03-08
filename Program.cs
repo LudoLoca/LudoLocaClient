@@ -1,35 +1,35 @@
-// ConfiguraÁ„o principal do projeto cliente MVC (.NET 8)
-// Este arquivo define todos os serviÁos essenciais, middlewares e integraÁıes necess·rias para o funcionamento do frontend.
+// Configura√ß√£o principal do projeto cliente MVC (.NET 8)
+// Este arquivo define todos os servi√ßos essenciais, middlewares e integra√ß√µes necess√°rias para o funcionamento do frontend.
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adiciona suporte a controllers e views (MVC padr„o)
+// Adiciona suporte a controllers e views (MVC padr√£o)
 builder.Services.AddControllersWithViews();
 
-// ConfiguraÁ„o de sess„o em memÛria (apenas para desenvolvimento)
-// Permite uso de TempData, autenticaÁ„o baseada em sess„o, etc.
+// Configura√ß√£o de sess√£o em mem√≥ria (apenas para desenvolvimento)
+// Permite uso de TempData, autentica√ß√£o baseada em sess√£o, etc.
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de expiraÁ„o da sess„o
-    options.Cookie.HttpOnly = true;                 // Cookie n„o acessÌvel via JS
-    options.Cookie.IsEssential = true;              // Necess·rio para funcionamento do app
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de expira√ß√£o da sess√£o
+    options.Cookie.HttpOnly = true;                 // Cookie n√£o acess√≠vel via JS
+    options.Cookie.IsEssential = true;              // Necess√°rio para funcionamento do app
 });
 
-// Permite acesso ao HttpContext em views e layouts (ex: autenticaÁ„o, sess„o)
+// Permite acesso ao HttpContext em views e layouts (ex: autentica√ß√£o, sess√£o)
 builder.Services.AddHttpContextAccessor();
 
-// ConfiguraÁ„o do HttpClient para chamadas ‡ API
-// Usa o valor de ApiBaseUrl definido no appsettings.json ou vari·veis de ambiente
+// Configura√ß√£o do HttpClient para chamadas √† API
+// Usa o valor de ApiBaseUrl definido no appsettings.json ou vari√°veis de ambiente
 builder.Services.AddHttpClient("Api", client =>
 {
-    // ATEN«√O: Certifique-se de que "ApiBaseUrl" est· definido corretamente no appsettings.json
+    // ATEN√á√ÉO: Certifique-se de que "ApiBaseUrl" est√° definido corretamente no appsettings.json
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
-    // TODO: Adicionar tratamento para caso ApiBaseUrl n„o esteja definido
+    // TODO: Adicionar tratamento para caso ApiBaseUrl n√£o esteja definido
 });
 
-// ConfiguraÁ„o de autenticaÁ„o baseada em cookie para o MVC (n„o utiliza banco de dados ou JWT)
-// Apenas para proteger rotas do lado do cliente, n„o interfere na autenticaÁ„o da API
+// Configura√ß√£o de autentica√ß√£o baseada em cookie para o MVC (n√£o utiliza banco de dados ou JWT)
+// Apenas para proteger rotas do lado do cliente, n√£o interfere na autentica√ß√£o da API
 builder.Services.AddAuthentication("AppCookie")
     .AddCookie("AppCookie", o =>
     {
@@ -41,37 +41,36 @@ builder.Services.AddAuthentication("AppCookie")
         o.SlidingExpiration = true;
     });
 
-// Adiciona suporte a autorizaÁ„o (usado com [Authorize] em controllers)
+// Adiciona suporte a autoriza√ß√£o (usado com [Authorize] em controllers)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// ConfiguraÁ„o de tratamento de erros e HSTS para produÁ„o
+// Configura√ß√£o de tratamento de erros e HSTS para produ√ß√£o
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
 
 // Redireciona HTTP para HTTPS
 app.UseHttpsRedirection();
 
-// Habilita arquivos est·ticos (wwwroot, css, js, imagens)
+// Habilita arquivos est√°ticos (wwwroot, css, js, imagens)
 app.UseStaticFiles();
 
-// Define o roteamento padr„o do MVC
+// Define o roteamento padr√£o do MVC
 app.UseRouting();
 
-// Habilita sess„o (deve vir antes de autenticaÁ„o/autorizaÁ„o)
+// Habilita sess√£o (deve vir antes de autentica√ß√£o/autoriza√ß√£o)
 app.UseSession();
 
-// Habilita autenticaÁ„o baseada em cookie
+// Habilita autentica√ß√£o baseada em cookie
 app.UseAuthentication();
 
-// Habilita autorizaÁ„o ([Authorize] em controllers)
+// Habilita autoriza√ß√£o ([Authorize] em controllers)
 app.UseAuthorization();
 
-// Define a rota padr„o: Home/Index/{id?}
+// Define a rota padr√£o: Home/Index/{id?}
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
